@@ -1,6 +1,7 @@
 import React from "react"
-import { graphql, useStaticQuery } from "gatsby"
+import { Link, graphql, useStaticQuery } from "gatsby"
 
+import Head from "../components/head"
 import Layout from "../components/layout"
 
 const Blog = () => {
@@ -16,25 +17,28 @@ const Blog = () => {
             html
             excerpt
             timeToRead
+            fields {
+              slug
+            }
           }
         }
       }
     }
   `)
 
-  const renderPostList = data.allMarkdownRemark.edges.map((item, i) => {
+  const renderPostList = data.allMarkdownRemark.edges.map((edge, i) => {
     return (
       <li key={i}>
-        <h2>{item.node.frontmatter.title}</h2>
-        <p>
-          {item.node.frontmatter.date}
-          <span> Time to read: {item.node.timeToRead} mins</span>
-        </p>
+        <Link to={`/blog/${edge.node.fields.slug}`}>
+          <h2>{edge.node.frontmatter.title}</h2>
+        </Link>
+        <p>{edge.node.frontmatter.date}</p>
       </li>
     )
   })
   return (
     <Layout>
+      <Head title="Berg's Words" />
       <ul>{renderPostList}</ul>
     </Layout>
   )
